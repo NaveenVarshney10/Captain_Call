@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sklearn
+import scipy
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
 from sklearn.preprocessing import OneHotEncoder
