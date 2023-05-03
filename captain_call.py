@@ -15,9 +15,10 @@ st.subheader("An illustrative webpage for those who doesn't love inconsistent un
 
 uploaded_file = st.file_uploader('Select Your data file (CSV)',type="csv")
 
+
 def return_df(data):
     csv_file = data.to_csv(index=False)
-    st.sidebar.download_button(label='Download processed CSV',data=csv_file,file_name='processed.csv',mime='text/csv') 
+    db = st.sidebar.download_button(label='Download processed CSV',data=csv_file,file_name='processed.csv',mime='text/csv')
 
 def impute_missing_values_with_mean(column_name, data_file):
     mean = data_file[column_name].mean()
@@ -46,7 +47,7 @@ def scale_numeric_columns(df):
     return df   
 
 def identify_outliers(df):
-    threshold = 3
+    threshold = 2
     outliers = []
     numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
     for col in numeric_columns:
@@ -88,14 +89,10 @@ def encode_features(df):
 
 
 
-
-
-
-
-
-
 if uploaded_file is not None:
     data_file = pd.read_csv(uploaded_file)
+
+
 
 
     if st.checkbox("EDA"):
@@ -147,9 +144,6 @@ if uploaded_file is not None:
             for i in del_col:
                 data_file.drop([i],axis=1,inplace=True)
 
-            if len(del_col) >= 1:
-                return_df(data_file)    
-
 
 
         # count the total number of missing values in the DataFrame
@@ -178,8 +172,8 @@ if uploaded_file is not None:
                 data_file = data_file.dropna()
                 data_file = data_file.reset_index(drop=True)
                 st.write("Yah!! All rows that have missing values are removed.")
-                return_df(data_file)
-     
+                
+
             elif var1 == 'Replace Missing Values':
                 columns_with_missing_values = data_file.columns[data_file.isnull().any()].tolist()
                 column_info_list = {}
@@ -217,26 +211,26 @@ if uploaded_file is not None:
                     While column ({median_col} in our DataFrame) that contain outliers has to be treated with their corresponding median and as you gussed it column ({mean_col} in our DataFrame)\
                     with no outliers has to be filled with mean") 
                     
-                return_df(data_file)
         else:
             st.write("Our data doesn't contain missing values. We are good to go ....")        
 
     if st.checkbox("Feature Scaling"):
-        st.write("Scaling is not necessary for algorithms like decision trees, which are not distance-based. Distance based models however\
-            , must have scaled features without any exception.")
+        with st.expander('Is it necessary to perform?'):
+            st.write("Scaling is not necessary for algorithms like decision trees, which are not distance-based. Distance based models however\
+                , must have scaled features without any exception.")
 
         var2 = st.selectbox("Based on your subject knowledge and given advise choose either of \
                 the two given options.",['','Perform Standard Scaling','I do not wish to perform Standard Scaling'],index=0)
 
         if var2 == "Perform Standard Scaling":
             scale_numeric_columns(data_file)
-            return_df(data_file)
-            st.write("Bingo!! We did it.")
+            st.write("Done. Great we have made so much of progress..")
 
     if st.checkbox("Outliers Treatment"): 
-        st.write("Outliers are data points that do not conform with the predominant pattern observed in the data.\
-         They can cause disruptions in the predictions by taking the calculations off the actual pattern. Hence it is \
-         advisable to remove outliers prior to appyling any machine learning technique.")  
+        with st.expander('Outliers? How to deal with it!!'):
+            st.write("Outliers are data points that do not conform with the predominant pattern observed in the data.\
+             They can cause disruptions in the predictions by taking the calculations off the actual pattern. Hence it is \
+             advisable to remove outliers prior to appyling any machine learning technique.")  
 
         outlier_cols = identify_outliers(data_file)
 
@@ -257,7 +251,6 @@ if uploaded_file is not None:
                 z_scores = stats.zscore(data_file[numeric_columns])
                 outliers = (abs(z_scores) > 2).any(axis=1)
                 data_file = data_file[~outliers]
-                return_df(data_file)
                 st.write("We did it for you!! Congrats")  
 
         else:
@@ -265,8 +258,9 @@ if uploaded_file is not None:
         
     
     if st.checkbox("Feature Encoding"):
-        st.write("Sometimes, data is in a format that can’t be processed by machines. For\
-        instance, a column with string values, like names, will mean nothing to a model that depends only on numbers. So, we need to process the data to help the model interpret it.")
+        with st.expander('Sounds very hectic. What is it now?'):
+            st.write("Sometimes, data is in a format that can’t be processed by machines. For\
+            instance, a column with string values, like names, will mean nothing to a model that depends only on numbers. So, we need to process the data to help the model interpret it.")
 
         categorical_columns = data_file.select_dtypes(include=['object']).columns.tolist()
         categories = []
@@ -296,11 +290,13 @@ if uploaded_file is not None:
 
                 return_df(data_file)
 
-                st.write("Done. Great we have made so much of progress..")
+                st.write("Great!. Processed file has been generated  ")
 
 
         else:
             st.write("No categorical variables found in our dataset!!")
+
+            st.write("Processed file has been generated :) ")
             return_df(data_file)
 
         
