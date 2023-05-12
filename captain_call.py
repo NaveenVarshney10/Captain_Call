@@ -19,6 +19,8 @@ uploaded_file = st.file_uploader('Select Your data file (CSV)',type="csv")
 def return_df(data):
     csv_file = data.to_csv(index=False)
     db = st.sidebar.download_button(label='Download processed CSV',data=csv_file,file_name='processed.csv',mime='text/csv')
+    st.sidebar.write("To describe descriptive measures and perform regression analysis on Processed Data [Click Here](https://naveenvarshney10-vam-vam-julhxz.streamlit.app/) ")
+
 
 def impute_missing_values_with_mean(column_name, data_file):
     mean = data_file[column_name].mean()
