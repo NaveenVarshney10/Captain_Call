@@ -276,9 +276,11 @@ if uploaded_file is not None:
             for category in categories:
                 st.write(f"{category[0]} with {category[1]} categories")
 
+            categories.append('I do not wish to perform Encoding')
+
             var4 = st.multiselect("Choose columns to perform One Hot Encoding",categorical_columns)
 
-            if len(var4) >= 1:
+            if len(var4) >= 1 and 'I do not wish to perform Encoding' not in var4:
                 encoder = OneHotEncoder()
                 encoded_array = encoder.fit_transform(data_file[var4]).toarray()
                 feature_names = []
@@ -293,7 +295,11 @@ if uploaded_file is not None:
                 return_df(data_file)
 
                 st.write("Great!. Processed file has been generated  ")
+            
+            elif 'I do not wish to perform Encoding' in var4:
+                return_df(data_file)
 
+                st.write("Great!. Processed file has been generated  ")
 
         else:
             st.write("No categorical variables found in our dataset!!")
