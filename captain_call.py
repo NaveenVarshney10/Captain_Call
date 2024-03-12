@@ -276,7 +276,7 @@ if uploaded_file is not None:
             for category in categories:
                 st.write(f"{category[0]} with {category[1]} categories")
 
-            categories.append('I do not wish to perform Encoding')
+            categorical_columns.append('I do not wish to perform Encoding')
 
             var4 = st.multiselect("Choose columns to perform One Hot Encoding",categorical_columns)
 
